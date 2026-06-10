@@ -88,7 +88,7 @@ export function useSearchTickers(query: string) {
   return useQuery<SearchResult[]>({
     queryKey: ["search", query],
     queryFn: () =>
-      apiFetch<SearchResult[]>(`/api/search?q=${encodeURIComponent(query)}`),
+      apiFetch<SearchResult[]>(`/api/search/?q=${encodeURIComponent(query)}`),
     enabled: query.trim().length >= 2,
     staleTime: 60_000,
   });
