@@ -1,7 +1,7 @@
 import base64
 import secrets
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from app.core.auth import create_access_token, get_current_user, hash_password, verify_password

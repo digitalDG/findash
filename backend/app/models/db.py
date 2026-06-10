@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Text, func
 from sqlalchemy.orm import relationship
 from app.core.database import Base
-from datetime import datetime, timezone
 
 
 class User(Base):
