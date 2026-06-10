@@ -10,7 +10,9 @@ import {
 } from "../hooks/useFinance";
 import TickerSearch from "./TickerSearch";
 import Paginator from "./Paginator";
+import AlertButton from "./AlertButton";
 import { usePagination } from "../hooks/usePagination";
+import { useAlerts } from "../hooks/useAlerts";
 import { downloadCsv } from "../utils/exportCsv";
 import type { StockQuote } from "../types/api";
 
@@ -76,6 +78,11 @@ export default function Watchlist({ onSelectTicker }: Props) {
   }, [watchlist?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { data: quotes = [], isLoading: loadingQuotes, error } = useBatchQuotes(tickers);
+  const { alerts, addAlert, removeAlert, checkAndFire } = useAlerts();
+
+  useEffect(() => {
+    if (quotes.length > 0) checkAndFire(quotes.map((q) => ({ ticker: q.ticker, price: q.price })));
+  }, [quotes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleAdd(symbol: string) {
     if (!symbol || tickers.includes(symbol)) return;
@@ -240,7 +247,7 @@ export default function Watchlist({ onSelectTicker }: Props) {
               <div
                 key={ticker}
                 onClick={() => onSelectTicker(ticker)}
-                className="grid grid-cols-[1fr_110px_90px_90px_auto] items-center gap-3 py-3.5 border-b border-border last:border-0 cursor-pointer rounded-md transition-all hover:bg-surface-raised hover:px-2"
+                className="grid grid-cols-[1fr_110px_90px_90px_auto_auto] items-center gap-3 py-3.5 border-b border-border last:border-0 cursor-pointer rounded-md transition-all hover:bg-surface-raised hover:px-2"
               >
                 <div>
                   <div className="font-bold text-[15px]">{ticker}</div>
@@ -255,6 +262,13 @@ export default function Watchlist({ onSelectTicker }: Props) {
                 <div className={`text-right text-xs ${q ? (isUp ? "text-positive" : "text-negative") : ""}`}>
                   {q ? formatChange(q) : ""}
                 </div>
+                <AlertButton
+                  ticker={ticker}
+                  currentPrice={q?.price}
+                  alert={alerts.find((a) => a.ticker === ticker)}
+                  onAdd={(targetPrice, direction) => addAlert(ticker, targetPrice, direction)}
+                  onRemove={removeAlert}
+                />
                 <button
                   onClick={(e) => handleRemoveTicker(ticker, e)}
                   className="text-muted hover:text-negative px-1.5 py-1 rounded transition-colors text-base"
