@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Bell } from "lucide-react";
 import type { PriceAlert } from "../hooks/useAlerts";
 
 interface Props {
@@ -35,12 +36,12 @@ export default function AlertButton({ ticker, currentPrice, alert, onAdd, onRemo
     <div className="relative" onClick={(e) => e.stopPropagation()}>
       <button
         onClick={() => (open ? setOpen(false) : handleOpen())}
-        className={`px-1.5 py-1 rounded transition-colors text-sm ${
+        className={`px-1.5 py-1 rounded transition-colors ${
           alert ? "text-yellow-400 hover:text-yellow-300" : "text-muted hover:text-foreground"
         }`}
         title={alert ? `Alert: ${alert.direction} $${alert.targetPrice.toFixed(2)}` : "Set price alert"}
       >
-        🔔
+        <Bell size={15} fill={alert ? "currentColor" : "none"} />
       </button>
 
       {open && (

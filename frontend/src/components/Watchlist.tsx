@@ -8,6 +8,7 @@ import {
   useRemoveWatchlistTicker,
   useBatchQuotes,
 } from "../hooks/useFinance";
+import { RefreshCw, Download, X } from "lucide-react";
 import TickerSearch from "./TickerSearch";
 import Paginator from "./Paginator";
 import AlertButton from "./AlertButton";
@@ -148,11 +149,11 @@ export default function Watchlist({ onSelectTicker }: Props) {
             {watchlists.length > 1 && (
               <button
                 onClick={(e) => handleDeleteWatchlist(wl.id, e)}
-                className={`absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] leading-none rounded opacity-0 group-hover:opacity-100 transition-opacity px-0.5 ${
+                className={`absolute right-1.5 top-1/2 -translate-y-1/2 rounded opacity-0 group-hover:opacity-100 transition-opacity px-0.5 ${
                   wl.id === watchlist?.id ? "text-white/70 hover:text-white" : "text-muted hover:text-negative"
                 }`}
               >
-                ✕
+                <X size={10} />
               </button>
             )}
           </div>
@@ -206,15 +207,17 @@ export default function Watchlist({ onSelectTicker }: Props) {
         <button
           onClick={exportCsv}
           disabled={tickers.length === 0}
-          className="bg-surface-raised hover:bg-border text-foreground text-sm font-medium px-4 py-2 rounded-md transition-colors disabled:opacity-40"
+          className="bg-surface-raised hover:bg-border text-foreground text-sm font-medium px-3 py-2 rounded-md transition-colors disabled:opacity-40 flex items-center gap-1.5"
         >
-          ↓ CSV
+          <Download size={14} />
+          CSV
         </button>
         <button
           onClick={refresh}
-          className="bg-surface-raised hover:bg-border text-foreground text-sm font-medium px-4 py-2 rounded-md transition-colors"
+          className="bg-surface-raised hover:bg-border text-foreground text-sm font-medium px-3 py-2 rounded-md transition-colors flex items-center gap-1.5"
         >
-          ↻ Refresh
+          <RefreshCw size={14} />
+          Refresh
         </button>
       </div>
 
@@ -271,9 +274,9 @@ export default function Watchlist({ onSelectTicker }: Props) {
                 />
                 <button
                   onClick={(e) => handleRemoveTicker(ticker, e)}
-                  className="text-muted hover:text-negative px-1.5 py-1 rounded transition-colors text-base"
+                  className="text-muted hover:text-negative px-1.5 py-1 rounded transition-colors"
                 >
-                  ✕
+                  <X size={14} />
                 </button>
               </div>
             );

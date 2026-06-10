@@ -9,6 +9,7 @@ import {
   useRemovePortfolioHolding,
   usePortfolio,
 } from "../hooks/useFinance";
+import { Download, X } from "lucide-react";
 import TickerSearch from "./TickerSearch";
 import Paginator from "./Paginator";
 import AlertButton from "./AlertButton";
@@ -147,9 +148,10 @@ export default function Portfolio({ onSelectTicker }: Props) {
         <button
           onClick={exportCsv}
           disabled={dbHoldings.length === 0}
-          className="bg-surface-raised hover:bg-border text-foreground text-sm font-medium px-4 py-2 rounded-md transition-colors disabled:opacity-40"
+          className="bg-surface-raised hover:bg-border text-foreground text-sm font-medium px-3 py-2 rounded-md transition-colors disabled:opacity-40 flex items-center gap-1.5"
         >
-          ↓ CSV
+          <Download size={14} />
+          CSV
         </button>
       </div>
 
@@ -337,7 +339,7 @@ export default function Portfolio({ onSelectTicker }: Props) {
                           onClick={(e) => { e.stopPropagation(); removeHolding.mutate(dbHolding.id); }}
                           className="text-muted hover:text-negative px-1.5 py-1 rounded transition-colors"
                         >
-                          ✕
+                          <X size={14} />
                         </button>
                       </div>
                     </td>
