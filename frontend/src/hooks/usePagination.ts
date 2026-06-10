@@ -4,7 +4,7 @@ export function usePagination<T>(items: T[], pageSize: number, resetKey?: unknow
   const [page, setPage] = useState(0);
 
   // Reset to first page whenever the list's identity changes (ticker/watchlist switch, etc.)
-  useEffect(() => { setPage(0); }, [resetKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { setPage(0); }, [resetKey]);
 
   const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
   const clampedPage = Math.min(page, totalPages - 1);

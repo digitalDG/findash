@@ -214,7 +214,7 @@ export default function Watchlist({ onSelectTicker }: Props) {
 
       {!isLoading && tickers.length > 0 && (
         <div className="bg-surface border border-border rounded-[10px] p-5">
-          {tickers.map((ticker) => {
+          {pageTickers.map((ticker) => {
             const q = quoteMap.get(ticker);
             const isUp = q ? q.change >= 0 : true;
             return (
@@ -245,6 +245,7 @@ export default function Watchlist({ onSelectTicker }: Props) {
               </div>
             );
           })}
+          <Paginator page={tickerPage} totalPages={tickerTotalPages} onPrev={tickerPrev} onNext={tickerNext} />
         </div>
       )}
     </div>
