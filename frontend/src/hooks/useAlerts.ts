@@ -52,7 +52,7 @@ export function useAlerts() {
       });
       save(remaining);
     },
-    [alerts], // eslint-disable-line react-hooks/exhaustive-deps
+    [alerts],
   );
 
   return { alerts, addAlert, removeAlert, checkAndFire };

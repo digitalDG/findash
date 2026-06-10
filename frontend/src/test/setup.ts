@@ -18,5 +18,5 @@ window.ResizeObserver = class {
 window.Notification = class {
   static permission: NotificationPermission = "default";
   static requestPermission = async () => "default" as NotificationPermission;
-  constructor(_title: string, _options?: NotificationOptions) {}
+  constructor() {}
 } as unknown as typeof Notification;
