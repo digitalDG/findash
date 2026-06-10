@@ -146,3 +146,66 @@ class SearchResult(BaseModel):
     name: str
     exchange: str = ""
     type: str = "Equity"
+
+
+# ── Auth ───────────────────────────────────────────────────────────────────
+
+class UserCreate(BaseModel):
+    email: str
+    password: str
+
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+
+class UserSchema(BaseModel):
+    id: int
+    email: str
+    avatar: Optional[str] = None
+    created_at: datetime
+    model_config = {"from_attributes": True}
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class ProfileUpdate(BaseModel):
+    current_password: str
+    new_email: Optional[str] = None
+    new_password: Optional[str] = None
+
+
+class DeleteAccountRequest(BaseModel):
+    password: str
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+
+# ── Price Alerts ────────────────────────────────────────────────────────────
+
+class AlertCreate(BaseModel):
+    ticker: str
+    target_price: float
+    direction: str  # "above" | "below"
+
+
+class AlertSchema(BaseModel):
+    id: int
+    ticker: str
+    target_price: float
+    direction: str
+    email: str
+    created_at: datetime
+    fired_at: Optional[datetime] = None
+    model_config = {"from_attributes": True}

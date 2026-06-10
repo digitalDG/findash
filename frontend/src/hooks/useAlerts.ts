@@ -8,6 +8,8 @@ export interface PriceAlert {
 }
 
 const KEY = "findash_price_alerts";
+const TOKEN_KEY = "findash_token";
+const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 function load(): PriceAlert[] {
   try { return JSON.parse(localStorage.getItem(KEY) ?? "[]"); }
@@ -24,6 +26,17 @@ export function useAlerts() {
 
   function addAlert(ticker: string, targetPrice: number, direction: "above" | "below") {
     save([...alerts, { id: `${ticker}-${Date.now()}`, ticker, targetPrice, direction }]);
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      fetch(`${BASE_URL}/api/alerts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ticker, target_price: targetPrice, direction }),
+      }).catch(console.error);
+    }
   }
 
   function removeAlert(id: string) {

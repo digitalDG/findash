@@ -36,6 +36,7 @@ export default function Watchlist({ onSelectTicker }: Props) {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [creatingNew, setCreatingNew] = useState(false);
   const [newName, setNewName] = useState("");
+  const [openAlertTicker, setOpenAlertTicker] = useState<string | null>(null);
   const [seeded, setSeeded] = useState(false);
   const queryClient = useQueryClient();
 
@@ -269,6 +270,9 @@ export default function Watchlist({ onSelectTicker }: Props) {
                   ticker={ticker}
                   currentPrice={q?.price}
                   alert={alerts.find((a) => a.ticker === ticker)}
+                  isOpen={openAlertTicker === ticker}
+                  onOpen={() => setOpenAlertTicker(ticker)}
+                  onClose={() => setOpenAlertTicker(null)}
                   onAdd={(targetPrice, direction) => addAlert(ticker, targetPrice, direction)}
                   onRemove={removeAlert}
                 />

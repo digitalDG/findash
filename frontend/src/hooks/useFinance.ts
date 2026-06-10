@@ -15,9 +15,21 @@ import type {
 } from "../types/api";
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const TOKEN_KEY = "findash_token";
+
+function getAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem(TOKEN_KEY);
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, options);
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      ...getAuthHeaders(),
+      ...(options?.headers as Record<string, string> | undefined),
+    },
+  });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: "Unknown error" }));
     throw new Error(err.detail ?? `HTTP ${res.status}`);

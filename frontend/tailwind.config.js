@@ -1,19 +1,27 @@
 /** @type {import('tailwindcss').Config} */
+
+function withOpacity(varName) {
+  return ({ opacityValue }) =>
+    opacityValue !== undefined
+      ? `rgba(var(${varName}), ${opacityValue})`
+      : `rgb(var(${varName}))`;
+}
+
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        background: "#0f1117",
+        background:  withOpacity("--color-background"),
         surface: {
-          DEFAULT: "#1a1d27",
-          raised:  "#22263a",
+          DEFAULT: withOpacity("--color-surface"),
+          raised:  withOpacity("--color-surface-raised"),
         },
-        border:     "#2a2e42",
-        foreground: "#e8eaf0",
-        muted:      "#7b7f94",
-        positive:   "#22c55e",
-        negative:   "#ef4444",
+        border:     withOpacity("--color-border"),
+        foreground: withOpacity("--color-foreground"),
+        muted:      withOpacity("--color-muted"),
+        positive:   withOpacity("--color-positive"),
+        negative:   withOpacity("--color-negative"),
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],

@@ -44,6 +44,7 @@ export default function Portfolio({ onSelectTicker }: Props) {
   const [costInput, setCostInput] = useState("");
   const [inputError, setInputError] = useState("");
   const [seeded, setSeeded] = useState(false);
+  const [openAlertTicker, setOpenAlertTicker] = useState<string | null>(null);
   const sharesRef = useRef<HTMLInputElement>(null);
 
   const { data: portfolios = [], isLoading: loadingPortfolios } = useSavedPortfolios();
@@ -84,6 +85,16 @@ export default function Portfolio({ onSelectTicker }: Props) {
   useEffect(() => {
     if (holdings.length) calculate(holdings);
   }, [holdingsKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-refresh prices every 60s so checkAndFire runs on a timer (same cadence as backend alert checker)
+  const holdingsRef = useRef(holdings);
+  useEffect(() => { holdingsRef.current = holdings; }, [holdings]);
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (holdingsRef.current.length) calculate(holdingsRef.current);
+    }, 60_000);
+    return () => clearInterval(id);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { alerts, addAlert, removeAlert, checkAndFire } = useAlerts();
 
@@ -332,6 +343,9 @@ export default function Portfolio({ onSelectTicker }: Props) {
                           ticker={dbHolding.symbol}
                           currentPrice={result?.current_price}
                           alert={alerts.find((a) => a.ticker === dbHolding.symbol)}
+                          isOpen={openAlertTicker === dbHolding.symbol}
+                          onOpen={() => setOpenAlertTicker(dbHolding.symbol)}
+                          onClose={() => setOpenAlertTicker(null)}
                           onAdd={(targetPrice, direction) => addAlert(dbHolding.symbol, targetPrice, direction)}
                           onRemove={removeAlert}
                         />

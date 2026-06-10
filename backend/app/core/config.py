@@ -17,6 +17,24 @@ class Settings(BaseSettings):
     history_ttl: int = 300
     name_ttl: int = 86400
 
+    # Microsoft Graph email (set MS_* vars in .env to enable email alerts)
+    ms_client_id: str = ""
+    ms_refresh_token: str = ""
+    ms_sender_email: str = ""
+
+    # How often the background task checks alert conditions (seconds)
+    alert_check_interval: int = 60
+
+    # Frontend URL (used in password-reset emails)
+    frontend_url: str = "http://localhost:5173"
+
+    # Security
+    alerts_api_key: str = ""
+    max_alerts_per_email: int = 5
+    jwt_secret: str = "change-me-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 60 * 24 * 7  # 7 days
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

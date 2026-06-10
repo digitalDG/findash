@@ -15,6 +15,9 @@ node_modules/
 frontend/dist/
 frontend/.env.local
 
+# SQLite (local dev fallback — not used when running via Docker)
+*.db
+
 # OS
 .DS_Store
 Thumbs.db

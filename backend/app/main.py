@@ -1,19 +1,53 @@
+import asyncio
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import quotes, history, portfolio, watchlists, saved_portfolios, fundamentals, news, search
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+
 from app.core.config import settings
-from app.core.database import engine, Base
+from app.core.database import Base, engine
+from app.routers import (
+    alerts,
+    fundamentals,
+    history,
+    news,
+    portfolio,
+    quotes,
+    saved_portfolios,
+    search,
+    watchlists,
+)
+from app.routers import auth as auth_router
+from app.services.alert_checker import run_alert_checker
 import app.models.db  # noqa: F401 — registers all models on Base.metadata
 
 # Auto-create tables for SQLite (local dev). Postgres uses Alembic migrations.
 if settings.database_url.startswith("sqlite"):
     Base.metadata.create_all(bind=engine)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    task = asyncio.create_task(run_alert_checker())
+    yield
+    task.cancel()
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
+
+
 app = FastAPI(
     title="FinDash API",
     description="Financial data dashboard API",
     version="1.0.0",
+    lifespan=lifespan,
 )
+
+app.state.limiter = alerts.limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,6 +57,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router.router)
 app.include_router(quotes.router, prefix="/api/quotes", tags=["quotes"])
 app.include_router(history.router, prefix="/api/history", tags=["history"])
 app.include_router(portfolio.router, prefix="/api/portfolio", tags=["portfolio"])
@@ -31,6 +66,7 @@ app.include_router(saved_portfolios.router, prefix="/api/saved-portfolios", tags
 app.include_router(fundamentals.router, prefix="/api/fundamentals", tags=["fundamentals"])
 app.include_router(news.router, prefix="/api/news", tags=["news"])
 app.include_router(search.router, prefix="/api/search", tags=["search"])
+app.include_router(alerts.router, prefix="/api/alerts", tags=["alerts"])
 
 
 @app.get("/health")
