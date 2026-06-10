@@ -75,7 +75,7 @@ uvicorn app.main:app --reload
 ```bash
 cd frontend
 npm install
-npm run dev                     # VITE_API_URL defaults to http://localhost:8000
+npm run dev                     # Vite dev server proxies /api to http://localhost:8000
 ```
 
 ---
@@ -108,7 +108,7 @@ npm run dev                     # VITE_API_URL defaults to http://localhost:8000
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `VITE_API_URL` | **Yes** | `http://localhost:8000` | Backend base URL — baked in at build time |
+| `API_URL` | **Yes** | _(empty)_ | Backend base URL — read at container startup by nginx to configure the API proxy |
 
 ---
 
@@ -185,12 +185,12 @@ npm run dev                     # VITE_API_URL defaults to http://localhost:8000
    MS_REFRESH_TOKEN=...
    MS_SENDER_EMAIL=...
    ```
-5. **Frontend service** — set this environment variable (build-time):
+5. **Frontend service** — set this environment variable (runtime):
    ```
-   VITE_API_URL=https://your-backend.up.railway.app
+   API_URL=https://your-backend.up.railway.app
    ```
 
-> `VITE_API_URL` is baked into the JavaScript bundle at build time by Vite. It must be set in Railway **before** the frontend builds — changing it later requires a redeploy.
+> `API_URL` is injected into the nginx config at container startup — it can be changed and the container restarted without a full rebuild.
 
 > **Tip:** Railway projects can be suspended from Settings → Danger Zone → Suspend at no charge — useful for portfolio projects you want to keep but not run continuously.
 
