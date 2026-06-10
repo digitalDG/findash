@@ -36,3 +36,15 @@ def db_client(db_session):
     client = TestClient(app)
     yield client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def auth_client(db_client):
+    """db_client pre-authenticated as a test user."""
+    r = db_client.post(
+        "/api/auth/register",
+        json={"email": "test@example.com", "password": "testpassword123"},
+    )
+    token = r.json()["access_token"]
+    db_client.headers.update({"Authorization": f"Bearer {token}"})
+    return db_client
