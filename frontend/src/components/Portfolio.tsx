@@ -12,6 +12,7 @@ import {
 import TickerSearch from "./TickerSearch";
 import Paginator from "./Paginator";
 import { usePagination } from "../hooks/usePagination";
+import { downloadCsv } from "../utils/exportCsv";
 import type { PortfolioHolding } from "../types/api";
 
 const DEFAULT_HOLDINGS: Array<{ ticker: string; shares: number }> = [
@@ -99,6 +100,27 @@ export default function Portfolio({ onSelectTicker }: Props) {
     setCostInput("");
   }
 
+  function exportCsv() {
+    const rows = [
+      ["Ticker", "Shares", "Cost Basis/Share", "Price", "Value", "Day Change ($)", "Day Change (%)", "Unrealized P&L ($)", "Unrealized P&L (%)"],
+      ...dbHoldings.map((h) => {
+        const r = summary?.holdings.find((s) => s.ticker === h.symbol);
+        return [
+          h.symbol,
+          String(h.shares),
+          h.cost_basis != null ? String(h.cost_basis) : "",
+          r ? String(r.current_price) : "",
+          r ? String(r.market_value) : "",
+          r ? String(r.day_change) : "",
+          r ? String(r.day_change_pct) : "",
+          r?.unrealized_gain != null ? String(r.unrealized_gain) : "",
+          r?.unrealized_gain_pct != null ? String(r.unrealized_gain_pct) : "",
+        ];
+      }),
+    ];
+    downloadCsv("portfolio.csv", rows);
+  }
+
   const isPositive = summary ? summary.total_day_change >= 0 : true;
   const isPnlPositive = summary?.total_unrealized_gain != null ? summary.total_unrealized_gain >= 0 : true;
   const isLoading = loadingPortfolios || calculating;
@@ -110,7 +132,16 @@ export default function Portfolio({ onSelectTicker }: Props) {
 
   return (
     <div>
-      <h2 className="text-lg font-bold mb-5">Portfolio</h2>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-lg font-bold">Portfolio</h2>
+        <button
+          onClick={exportCsv}
+          disabled={dbHoldings.length === 0}
+          className="bg-surface-raised hover:bg-border text-foreground text-sm font-medium px-4 py-2 rounded-md transition-colors disabled:opacity-40"
+        >
+          ↓ CSV
+        </button>
+      </div>
 
       {summary && (
         <div className="grid grid-cols-2 gap-4 mb-5 sm:grid-cols-4">

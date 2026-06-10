@@ -11,6 +11,7 @@ import {
 import TickerSearch from "./TickerSearch";
 import Paginator from "./Paginator";
 import { usePagination } from "../hooks/usePagination";
+import { downloadCsv } from "../utils/exportCsv";
 import type { StockQuote } from "../types/api";
 
 const DEFAULT_TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA"];
@@ -107,6 +108,17 @@ export default function Watchlist({ onSelectTicker }: Props) {
     queryClient.invalidateQueries({ queryKey: ["quotes", tickers] });
   }
 
+  function exportCsv() {
+    const rows = [
+      ["Ticker", "Name", "Price", "Change ($)", "Change (%)"],
+      ...tickers.map((ticker) => {
+        const q = quoteMap.get(ticker);
+        return [ticker, q?.name ?? "", q ? String(q.price) : "", q ? String(q.change) : "", q ? String(q.change_pct) : ""];
+      }),
+    ];
+    downloadCsv(`${watchlist?.name ?? "watchlist"}.csv`, rows);
+  }
+
   const quoteMap = new Map(quotes.map((q) => [q.ticker, q]));
   const isLoading = loadingWatchlists || loadingQuotes;
 
@@ -184,6 +196,13 @@ export default function Watchlist({ onSelectTicker }: Props) {
           disabled={!watchlist}
           className="w-48"
         />
+        <button
+          onClick={exportCsv}
+          disabled={tickers.length === 0}
+          className="bg-surface-raised hover:bg-border text-foreground text-sm font-medium px-4 py-2 rounded-md transition-colors disabled:opacity-40"
+        >
+          ↓ CSV
+        </button>
         <button
           onClick={refresh}
           className="bg-surface-raised hover:bg-border text-foreground text-sm font-medium px-4 py-2 rounded-md transition-colors"
