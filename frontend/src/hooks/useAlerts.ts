@@ -28,7 +28,7 @@ export function useAlerts() {
     save([...alerts, { id: `${ticker}-${Date.now()}`, ticker, targetPrice, direction }]);
     const token = localStorage.getItem(TOKEN_KEY);
     if (token) {
-      fetch(`${BASE_URL}/api/alerts`, {
+      fetch(`${BASE_URL}/api/alerts/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
