@@ -2,7 +2,7 @@
 
 A financial data dashboard with a **FastAPI + Python** backend and **React + TypeScript** frontend.
 
-Live stock quotes, historical price charts, company fundamentals, news feed, watchlist and portfolio tracking — all persisted to PostgreSQL, cached in Redis, and powered by `yfinance` (no API key needed).
+Live stock quotes, historical price charts, company fundamentals, news feed, watchlist and portfolio tracking — all persisted to PostgreSQL, cached in Redis, and powered by `yfinance` (no API key needed). Includes CSV export for watchlists and portfolios, and browser push notifications for price alerts.
 
 ---
 
@@ -14,7 +14,7 @@ Live stock quotes, historical price charts, company fundamentals, news feed, wat
 | Database | PostgreSQL 16 + Alembic migrations |
 | Cache | Redis 7 (in-memory fallback when Redis is unavailable) |
 | Market Data | yfinance (`yf.download()` for rate-limit-safe batch fetching) |
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS v3, TanStack Query v5, Recharts |
+| Frontend | React 18, TypeScript, Vite, Tailwind CSS v3, TanStack Query v5, Recharts, Lucide React |
 | Dev Infra | Docker Compose (Postgres + Redis + backend + frontend) |
 | CI/CD | GitHub Actions (lint, test, type-check, build) |
 | Deploy | Railway (backend + frontend + Postgres + Redis) |
@@ -160,10 +160,14 @@ findash/
 │       │   ├── Portfolio.tsx        # DB-backed portfolio with cost basis + pagination
 │       │   ├── StockDetail.tsx      # Price chart, fundamentals, news
 │       │   ├── TickerSearch.tsx     # Debounced ticker/company search input
+│       │   ├── AlertButton.tsx      # Per-row bell icon + popover for price alerts
 │       │   └── Paginator.tsx        # Reusable prev/next paginator
 │       ├── hooks/
 │       │   ├── useFinance.ts        # All TanStack Query query/mutation hooks
+│       │   ├── useAlerts.ts         # Browser push price alerts (localStorage-persisted)
 │       │   └── usePagination.ts     # Generic pagination hook
+│       ├── utils/
+│       │   └── exportCsv.ts         # CSV blob download helper
 │       ├── test/
 │       │   ├── setup.ts             # Vitest + jest-dom setup
 │       │   ├── App.test.tsx
