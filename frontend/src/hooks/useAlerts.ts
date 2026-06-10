@@ -32,7 +32,7 @@ export function useAlerts() {
 
   const checkAndFire = useCallback(
     (prices: { ticker: string; price: number }[]) => {
-      if (Notification.permission !== "granted" || alerts.length === 0) return;
+      if (typeof Notification === "undefined" || Notification.permission !== "granted" || alerts.length === 0) return;
       const fired: PriceAlert[] = [];
       const remaining = alerts.filter((alert) => {
         const q = prices.find((p) => p.ticker === alert.ticker);
