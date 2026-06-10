@@ -11,7 +11,9 @@ import {
 } from "../hooks/useFinance";
 import TickerSearch from "./TickerSearch";
 import Paginator from "./Paginator";
+import AlertButton from "./AlertButton";
 import { usePagination } from "../hooks/usePagination";
+import { useAlerts } from "../hooks/useAlerts";
 import { downloadCsv } from "../utils/exportCsv";
 import type { PortfolioHolding } from "../types/api";
 
@@ -81,6 +83,14 @@ export default function Portfolio({ onSelectTicker }: Props) {
   useEffect(() => {
     if (holdings.length) calculate(holdings);
   }, [holdingsKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const { alerts, addAlert, removeAlert, checkAndFire } = useAlerts();
+
+  useEffect(() => {
+    if (summary && summary.holdings.length > 0) {
+      checkAndFire(summary.holdings.map((h) => ({ ticker: h.ticker, price: h.current_price })));
+    }
+  }, [summary]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleAdd() {
     setInputError("");
@@ -315,12 +325,21 @@ export default function Portfolio({ onSelectTicker }: Props) {
                         : "—"}
                     </td>
                     <td className="px-3 py-3.5 text-right">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); removeHolding.mutate(dbHolding.id); }}
-                        className="text-muted hover:text-negative px-1.5 py-1 rounded transition-colors"
-                      >
-                        ✕
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        <AlertButton
+                          ticker={dbHolding.symbol}
+                          currentPrice={result?.current_price}
+                          alert={alerts.find((a) => a.ticker === dbHolding.symbol)}
+                          onAdd={(targetPrice, direction) => addAlert(dbHolding.symbol, targetPrice, direction)}
+                          onRemove={removeAlert}
+                        />
+                        <button
+                          onClick={(e) => { e.stopPropagation(); removeHolding.mutate(dbHolding.id); }}
+                          className="text-muted hover:text-negative px-1.5 py-1 rounded transition-colors"
+                        >
+                          ✕
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
