@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { Bell } from "lucide-react";
 import type { PriceAlert } from "../hooks/useAlerts";
@@ -30,6 +30,15 @@ export default function AlertButton({ ticker, currentPrice, alert, isOpen, onOpe
     }
     onOpen();
   }
+
+  useLayoutEffect(() => {
+    if (!isOpen || !dropdownRef.current || !buttonRef.current) return;
+    const btnRect = buttonRef.current.getBoundingClientRect();
+    const dropRect = dropdownRef.current.getBoundingClientRect();
+    if (btnRect.bottom + dropRect.height + 8 > window.innerHeight) {
+      setDropPos({ top: btnRect.top - dropRect.height - 4, right: window.innerWidth - btnRect.right });
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
