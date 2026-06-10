@@ -152,7 +152,7 @@ describe("Portfolio", () => {
   it("removes a holding when ✕ is clicked", async () => {
     const user = userEvent.setup();
     render(<Portfolio onSelectTicker={onSelectTicker} />);
-    const removeButtons = screen.getAllByRole("button", { name: "✕" });
+    const removeButtons = screen.getAllByRole("button", { name: "Remove" });
     await user.click(removeButtons[0]);
     expect(mockRemoveHolding).toHaveBeenCalledWith(1);
   });

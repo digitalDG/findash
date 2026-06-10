@@ -273,6 +273,7 @@ export default function Watchlist({ onSelectTicker }: Props) {
                   onRemove={removeAlert}
                 />
                 <button
+                  aria-label="Remove"
                   onClick={(e) => handleRemoveTicker(ticker, e)}
                   className="text-muted hover:text-negative px-1.5 py-1 rounded transition-colors"
                 >

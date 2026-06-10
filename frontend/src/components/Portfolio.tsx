@@ -336,6 +336,7 @@ export default function Portfolio({ onSelectTicker }: Props) {
                           onRemove={removeAlert}
                         />
                         <button
+                          aria-label="Remove"
                           onClick={(e) => { e.stopPropagation(); removeHolding.mutate(dbHolding.id); }}
                           className="text-muted hover:text-negative px-1.5 py-1 rounded transition-colors"
                         >

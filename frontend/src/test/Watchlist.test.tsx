@@ -116,7 +116,7 @@ describe("Watchlist", () => {
   it("removes a ticker when ✕ is clicked", async () => {
     const user = userEvent.setup();
     render(<Watchlist onSelectTicker={onSelectTicker} />);
-    const removeButtons = screen.getAllByRole("button", { name: "✕" });
+    const removeButtons = screen.getAllByRole("button", { name: "Remove" });
     await user.click(removeButtons[0]);
     expect(mockRemoveTicker).toHaveBeenCalledWith("AAPL");
   });
