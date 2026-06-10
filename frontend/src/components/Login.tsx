@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const BASE_URL = "";
 
 interface Props {
   onSwitchToRegister: () => void;

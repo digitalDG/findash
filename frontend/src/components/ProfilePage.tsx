@@ -2,7 +2,7 @@ import { useState, useRef, type FormEvent, type ChangeEvent } from "react";
 import { Eye, EyeOff, ArrowLeft, Trash2, Camera } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const BASE_URL = "";
 const TOKEN_KEY = "findash_token";
 
 const AVATAR_COLORS = ["#6366f1", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#ef4444"];
