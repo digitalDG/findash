@@ -2,7 +2,7 @@
 
 A financial data dashboard with a **FastAPI + Python** backend and **React + TypeScript** frontend.
 
-Live stock quotes, historical price charts, watchlist and portfolio tracking — all persisted to PostgreSQL, cached in Redis, and powered by `yfinance` (no API key needed).
+Live stock quotes, historical price charts, company fundamentals, news feed, watchlist and portfolio tracking — all persisted to PostgreSQL, cached in Redis, and powered by `yfinance` (no API key needed).
 
 ---
 
@@ -85,7 +85,10 @@ npm run dev
 | GET | `/api/quotes/{ticker}` | Current quote for a ticker |
 | GET | `/api/quotes/batch/{tickers}` | Batch quotes (comma-separated) |
 | GET | `/api/history/{ticker}?period=30d` | Historical prices (7d/30d/90d/1y) |
-| POST | `/api/portfolio/` | Portfolio value + daily P&L calculation |
+| GET | `/api/fundamentals/{ticker}` | P/E, EPS, market cap, 52-week range, etc. |
+| GET | `/api/news/{ticker}` | Recent news articles for a ticker |
+| GET | `/api/search/?q=` | Search tickers by symbol or company name |
+| POST | `/api/portfolio/` | Portfolio value + daily P&L + unrealized gain calculation |
 
 ### Watchlists (DB-persisted)
 
@@ -106,7 +109,7 @@ npm run dev
 | POST | `/api/saved-portfolios/` | Create a portfolio |
 | GET | `/api/saved-portfolios/{id}` | Get a portfolio with holdings |
 | DELETE | `/api/saved-portfolios/{id}` | Delete a portfolio |
-| POST | `/api/saved-portfolios/{id}/holdings` | Add holding |
+| POST | `/api/saved-portfolios/{id}/holdings` | Add holding (ticker, shares, optional cost basis) |
 | DELETE | `/api/saved-portfolios/{id}/holdings/{holdingId}` | Remove holding |
 
 | Misc | | |
@@ -131,7 +134,10 @@ findash/
 │   │   ├── routers/
 │   │   │   ├── quotes.py            # GET /api/quotes
 │   │   │   ├── history.py           # GET /api/history
-│   │   │   ├── portfolio.py         # POST /api/portfolio (price calc)
+│   │   │   ├── fundamentals.py      # GET /api/fundamentals
+│   │   │   ├── news.py              # GET /api/news
+│   │   │   ├── search.py            # GET /api/search
+│   │   │   ├── portfolio.py         # POST /api/portfolio (value + P&L calc)
 │   │   │   ├── watchlists.py        # CRUD /api/watchlists
 │   │   │   └── saved_portfolios.py  # CRUD /api/saved-portfolios
 │   │   └── services/
@@ -140,19 +146,32 @@ findash/
 │   ├── alembic/                     # Database migrations
 │   │   └── versions/
 │   ├── tests/
-│   │   └── test_api.py
+│   │   ├── conftest.py              # In-memory SQLite fixtures
+│   │   ├── test_api.py              # Quote, history, portfolio endpoints
+│   │   ├── test_market_data.py      # yfinance service layer
+│   │   ├── test_saved_portfolios.py # Saved portfolio CRUD
+│   │   └── test_watchlists.py       # Watchlist CRUD
 │   ├── Dockerfile
 │   └── requirements.txt
 ├── frontend/
 │   └── src/
 │       ├── components/
-│       │   ├── Watchlist.tsx        # DB-backed watchlist (TanStack Query)
-│       │   ├── StockDetail.tsx      # Price chart + quote detail
-│       │   └── Portfolio.tsx        # DB-backed portfolio (TanStack Query)
+│       │   ├── Watchlist.tsx        # DB-backed watchlist with pagination
+│       │   ├── Portfolio.tsx        # DB-backed portfolio with cost basis + pagination
+│       │   ├── StockDetail.tsx      # Price chart, fundamentals, news
+│       │   ├── TickerSearch.tsx     # Debounced ticker/company search input
+│       │   └── Paginator.tsx        # Reusable prev/next paginator
 │       ├── hooks/
-│       │   └── useFinance.ts        # All query/mutation hooks
+│       │   ├── useFinance.ts        # All TanStack Query query/mutation hooks
+│       │   └── usePagination.ts     # Generic pagination hook
+│       ├── test/
+│       │   ├── setup.ts             # Vitest + jest-dom setup
+│       │   ├── App.test.tsx
+│       │   ├── Watchlist.test.tsx
+│       │   ├── Portfolio.test.tsx
+│       │   └── StockDetail.test.tsx
 │       └── types/
-│           └── api.ts               # TypeScript types mirroring schemas
+│           └── api.ts               # TypeScript types mirroring backend schemas
 ├── docker-compose.yml               # Postgres + Redis + backend + frontend
 └── .github/
     └── workflows/
