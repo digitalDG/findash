@@ -18,6 +18,7 @@ Live stock quotes, historical price charts, company fundamentals, news feed, wat
 - **Transactional emails** — notifications on password change, email change, account deletion
 - **Dark / light theme** — persisted to localStorage, no flash on load
 - **Rate limiting** — 20 alert creations per minute per IP (slowapi)
+- **Observability** — PostHog user analytics, Sentry error tracking (frontend + backend), Better Stack log aggregation and uptime monitoring
 
 ---
 
@@ -35,6 +36,7 @@ Live stock quotes, historical price charts, company fundamentals, news feed, wat
 | Dev Infra | Docker Compose (Postgres + Redis + backend + frontend) |
 | CI/CD | GitHub Actions (lint, test, type-check, build) |
 | Deploy | Railway (backend + frontend + Postgres + Redis) |
+| Observability | PostHog (user analytics), Sentry (error tracking), Better Stack (logs + uptime) |
 
 ---
 
