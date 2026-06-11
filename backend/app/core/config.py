@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     # Frontend URL (used in password-reset emails)
     frontend_url: str = "http://localhost:5173"
 
+    # Observability
+    sentry_dsn: str = ""
+    better_stack_token: str = ""
+
     # Security
     alerts_api_key: str = ""
     max_alerts_per_email: int = 5

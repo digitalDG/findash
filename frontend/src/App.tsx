@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { ErrorBoundary as SentryErrorBoundary } from "@sentry/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Sun, Moon } from "lucide-react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -156,8 +157,14 @@ function AppShell() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppShell />
-    </AuthProvider>
+    <SentryErrorBoundary fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-muted text-sm">Something went wrong. Please reload.</p>
+      </div>
+    }>
+      <AuthProvider>
+        <AppShell />
+      </AuthProvider>
+    </SentryErrorBoundary>
   );
 }

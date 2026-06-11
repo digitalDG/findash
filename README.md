@@ -94,6 +94,8 @@ npm run dev                     # Vite dev server proxies /api to http://localho
 | `MS_CLIENT_ID` | Yes (email) | _(empty)_ | Azure App Registration client ID |
 | `MS_REFRESH_TOKEN` | Yes (email) | _(empty)_ | OAuth2 refresh token for Microsoft Graph Mail.Send |
 | `MS_SENDER_EMAIL` | Yes (email) | _(empty)_ | Outlook/Microsoft 365 address to send from |
+| `SENTRY_DSN` | No | _(empty)_ | Sentry DSN for backend error tracking — leave unset to disable |
+| `BETTER_STACK_TOKEN` | No | _(empty)_ | Better Stack source token for log forwarding — leave unset to disable |
 | `QUOTE_TTL` | No | `60` | Quote cache TTL in seconds |
 | `HISTORY_TTL` | No | `300` | History cache TTL in seconds |
 | `NAME_TTL` | No | `86400` | Company name cache TTL in seconds |

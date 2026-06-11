@@ -1,12 +1,30 @@
 import asyncio
+import logging
 from contextlib import asynccontextmanager
 
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from logtail import LogtailHandler
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.starlette import StarletteIntegration
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
+
+if settings.sentry_dsn:
+    sentry_sdk.init(
+        dsn=settings.sentry_dsn,
+        integrations=[StarletteIntegration(), FastApiIntegration()],
+        traces_sample_rate=0.1,
+        send_default_pii=False,
+    )
+
+if settings.better_stack_token:
+    _logtail = LogtailHandler(source_token=settings.better_stack_token)
+    for name in ("uvicorn.access", "uvicorn.error", "app"):
+        logging.getLogger(name).addHandler(_logtail)
 from app.core.database import Base, engine
 from app.routers import (
     alerts,
