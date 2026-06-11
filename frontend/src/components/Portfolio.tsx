@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import posthog from "posthog-js";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -116,6 +117,7 @@ export default function Portfolio({ onSelectTicker }: Props) {
       shares,
       cost_basis: !isNaN(cost) && cost > 0 ? cost : undefined,
     });
+    posthog.capture("holding_added");
     setSelectedSymbol("");
     setSearchKey((k) => k + 1);
     setSharesInput("");
@@ -141,6 +143,7 @@ export default function Portfolio({ onSelectTicker }: Props) {
       }),
     ];
     downloadCsv("portfolio.csv", rows);
+    posthog.capture("csv_exported", { type: "portfolio" });
   }
 
   const isPositive = summary ? summary.total_day_change >= 0 : true;
@@ -317,7 +320,7 @@ export default function Portfolio({ onSelectTicker }: Props) {
                 return (
                   <tr
                     key={dbHolding.id}
-                    onClick={() => onSelectTicker(dbHolding.symbol)}
+                    onClick={() => { onSelectTicker(dbHolding.symbol); posthog.capture("stock_viewed", { source: "portfolio" }); }}
                     className="cursor-pointer transition-colors hover:bg-surface-raised border-b border-border last:border-0"
                   >
                     <td className="px-3 py-3.5 text-left">
@@ -351,7 +354,7 @@ export default function Portfolio({ onSelectTicker }: Props) {
                         />
                         <button
                           aria-label="Remove"
-                          onClick={(e) => { e.stopPropagation(); removeHolding.mutate(dbHolding.id); }}
+                          onClick={(e) => { e.stopPropagation(); posthog.capture("holding_removed"); removeHolding.mutate(dbHolding.id); }}
                           className="text-muted hover:text-negative px-1.5 py-1 rounded transition-colors"
                         >
                           <X size={14} />

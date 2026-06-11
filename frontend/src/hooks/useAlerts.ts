@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import posthog from "posthog-js";
 
 export interface PriceAlert {
   id: string;
@@ -26,6 +27,7 @@ export function useAlerts() {
 
   function addAlert(ticker: string, targetPrice: number, direction: "above" | "below") {
     save([...alerts, { id: `${ticker}-${Date.now()}`, ticker, targetPrice, direction }]);
+    posthog.capture("alert_set");
     const token = localStorage.getItem(TOKEN_KEY);
     if (token) {
       fetch(`${BASE_URL}/api/alerts/`, {
@@ -40,6 +42,7 @@ export function useAlerts() {
   }
 
   function removeAlert(id: string) {
+    posthog.capture("alert_removed");
     save(alerts.filter((a) => a.id !== id));
   }
 

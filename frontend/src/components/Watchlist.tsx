@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import posthog from "posthog-js";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useWatchlists,
@@ -89,11 +90,13 @@ export default function Watchlist({ onSelectTicker }: Props) {
   function handleAdd(symbol: string) {
     if (!symbol || tickers.includes(symbol)) return;
     addTicker.mutate(symbol);
+    posthog.capture("ticker_added");
   }
 
   function handleRemoveTicker(symbol: string, e: React.MouseEvent) {
     e.stopPropagation();
     removeTicker.mutate(symbol);
+    posthog.capture("ticker_removed");
   }
 
   function handleCreateWatchlist() {
@@ -126,6 +129,7 @@ export default function Watchlist({ onSelectTicker }: Props) {
       }),
     ];
     downloadCsv(`${watchlist?.name ?? "watchlist"}.csv`, rows);
+    posthog.capture("csv_exported", { type: "watchlist" });
   }
 
   const quoteMap = new Map(quotes.map((q) => [q.ticker, q]));
@@ -250,7 +254,7 @@ export default function Watchlist({ onSelectTicker }: Props) {
             return (
               <div
                 key={ticker}
-                onClick={() => onSelectTicker(ticker)}
+                onClick={() => { onSelectTicker(ticker); posthog.capture("stock_viewed", { source: "watchlist" }); }}
                 className="grid grid-cols-[1fr_110px_90px_90px_auto_auto] items-center gap-3 py-3.5 border-b border-border last:border-0 cursor-pointer rounded-md transition-all hover:bg-surface-raised hover:px-2"
               >
                 <div>
