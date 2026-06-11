@@ -13,7 +13,7 @@ posthog.init("phc_pAEFof3k4MtejrhMiXMa7VtqRvvavMccF4jQbNEmBLGT", {
 });
 
 Sentry.init({
-  dsn: "https://511c8f84ea0ad0cb7180e2c238fa5afa@o4511089792057344.ingest.us.sentry.io/4511548614115328",
+  dsn: "https://4f91e5f9b7939545bbb7ea0cdb8301c5@o4511089792057344.ingest.us.sentry.io/4511548752199680",
   integrations: [Sentry.browserTracingIntegration()],
   tracesSampleRate: 0.1,
   environment: import.meta.env.MODE,
