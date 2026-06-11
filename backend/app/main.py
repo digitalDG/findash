@@ -13,12 +13,22 @@ from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 
+def _drop_yfinance_noise(event, hint):
+    exc = hint.get("exc_info")
+    if exc:
+        msg = str(exc[1])
+        if "database is locked" in msg or "Invalid Crumb" in msg or "Failed download" in msg:
+            return None
+    return event
+
+
 if settings.sentry_dsn:
     sentry_sdk.init(
         dsn=settings.sentry_dsn,
         integrations=[StarletteIntegration(), FastApiIntegration()],
         traces_sample_rate=0.1,
         send_default_pii=False,
+        before_send=_drop_yfinance_noise,
     )
 
 if settings.better_stack_token:
