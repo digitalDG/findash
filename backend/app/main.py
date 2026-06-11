@@ -12,6 +12,22 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
+from app.core.database import Base, engine
+from app.routers import (
+    alerts,
+    fundamentals,
+    history,
+    news,
+    portfolio,
+    quotes,
+    saved_portfolios,
+    search,
+    watchlists,
+)
+from app.routers import auth as auth_router
+from app.services.alert_checker import run_alert_checker
+import app.models.db  # noqa: F401 — registers all models on Base.metadata
+
 
 def _drop_yfinance_noise(event, hint):
     exc = hint.get("exc_info")
@@ -35,21 +51,6 @@ if settings.better_stack_token:
     _logtail = LogtailHandler(source_token=settings.better_stack_token)
     for name in ("uvicorn.access", "uvicorn.error", "app"):
         logging.getLogger(name).addHandler(_logtail)
-from app.core.database import Base, engine
-from app.routers import (
-    alerts,
-    fundamentals,
-    history,
-    news,
-    portfolio,
-    quotes,
-    saved_portfolios,
-    search,
-    watchlists,
-)
-from app.routers import auth as auth_router
-from app.services.alert_checker import run_alert_checker
-import app.models.db  # noqa: F401 — registers all models on Base.metadata
 
 # Auto-create tables for SQLite (local dev). Postgres uses Alembic migrations.
 if settings.database_url.startswith("sqlite"):
