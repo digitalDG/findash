@@ -1,2 +1,15 @@
 #!/bin/sh
-cd frontend && npm run lint && npm run test:unit -- run
+set -e
+
+# Backend: ruff catches syntax errors, undefined names, missing imports
+cd backend
+if [ -f venv/Scripts/python ]; then PYTHON=venv/Scripts/python
+elif [ -f venv/bin/python ]; then PYTHON=venv/bin/python
+else PYTHON=python; fi
+$PYTHON -m ruff check app/
+cd ..
+
+# Frontend: eslint + vitest unit tests
+cd frontend
+npm run lint
+npm run test:unit -- run
