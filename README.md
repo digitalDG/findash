@@ -42,6 +42,51 @@ Live stock quotes, historical price charts, company fundamentals, news feed, wat
 
 ---
 
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph Client["Client"]
+        FE["React Frontend\nTanStack Query"]
+    end
+
+    subgraph API["FastAPI Backend"]
+        MW["CORS · Rate Limit\nMiddleware"]
+        AUTH["/api/auth\nregister · login · me\nforgot/reset password"]
+        MKT["/api/quotes · history\nfundamentals · news · search"]
+        DATA["/api/watchlists\nsaved-portfolios · portfolio"]
+        ALT["/api/alerts\n20 req/min rate limit"]
+        BGK["Alert Checker\nbackground task"]
+    end
+
+    subgraph Store["Data Layer"]
+        PG[("PostgreSQL\nusers · watchlists\nportfolios · alerts")]
+        RD[("Redis\nquote cache · reset tokens\nin-memory fallback")]
+    end
+
+    subgraph Ext["External Services"]
+        YF["yfinance\nYahoo Finance"]
+        MSG["Microsoft Graph\nEmail delivery"]
+        SNT["Sentry\nError tracking"]
+        BST["Better Stack\nLog aggregation"]
+    end
+
+    FE -->|"JWT Bearer"| MW
+    MW --> AUTH & MKT & DATA & ALT
+    AUTH --> PG
+    DATA --> PG
+    ALT --> PG
+    MKT <-->|"read/write"| RD
+    MKT -->|"cache miss"| YF
+    BGK -->|"poll prices"| YF
+    BGK <-->|"read/update alerts"| PG
+    BGK -->|"trigger email"| MSG
+    API -.->|"errors"| SNT
+    API -.->|"logs"| BST
+```
+
+---
+
 ## Quick Start (Docker Compose)
 
 ```bash
