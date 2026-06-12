@@ -1,6 +1,6 @@
 import { useState, useRef, type FormEvent, type ChangeEvent } from "react";
 import { Eye, EyeOff, ArrowLeft, Trash2, Camera } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const BASE_URL = "";
 const TOKEN_KEY = "findash_token";

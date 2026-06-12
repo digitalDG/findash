@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { Bell } from "lucide-react";
-import type { PriceAlert } from "../hooks/useAlerts";
+import type { PriceAlert } from "../../hooks/useAlerts";
 
 interface Props {
   ticker: string;

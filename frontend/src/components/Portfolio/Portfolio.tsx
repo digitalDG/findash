@@ -9,15 +9,15 @@ import {
   useAddPortfolioHolding,
   useRemovePortfolioHolding,
   usePortfolio,
-} from "../hooks/useFinance";
+} from "../../hooks/useFinance";
 import { Download, X } from "lucide-react";
-import TickerSearch from "./TickerSearch";
-import Paginator from "./Paginator";
-import AlertButton from "./AlertButton";
-import { usePagination } from "../hooks/usePagination";
-import { useAlerts } from "../hooks/useAlerts";
-import { downloadCsv } from "../utils/exportCsv";
-import type { PortfolioHolding } from "../types/api";
+import TickerSearch from "../TickerSearch";
+import Paginator from "../Paginator";
+import AlertButton from "../AlertButton";
+import { usePagination } from "../../hooks/usePagination";
+import { useAlerts } from "../../hooks/useAlerts";
+import { downloadCsv } from "../../utils/exportCsv";
+import type { PortfolioHolding } from "../../types/api";
 
 const DEFAULT_HOLDINGS: Array<{ ticker: string; shares: number }> = [
   { ticker: "AAPL", shares: 10 },

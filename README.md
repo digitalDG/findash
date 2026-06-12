@@ -32,9 +32,11 @@ Live stock quotes, historical price charts, company fundamentals, news feed, wat
 | Auth | JWT (python-jose), bcrypt password hashing (passlib) |
 | Email | Microsoft Graph API (OAuth2 refresh token flow) |
 | Market Data | yfinance (`yf.download()` for rate-limit-safe batch fetching) |
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS v3, TanStack Query v5, Recharts, Lucide React |
+| Frontend | React 18, TypeScript, Vite + SWC, Tailwind CSS v3, TanStack Query v5, Recharts, Lucide React |
+| Component Dev | Storybook 10 (MSW mocking, play() interaction tests, autodocs, a11y) |
+| Testing | Vitest 4 (unit — jsdom), Playwright + Vitest browser (Storybook stories) |
 | Dev Infra | Docker Compose (Postgres + Redis + backend + frontend) |
-| CI/CD | GitHub Actions (lint, test, type-check, build) |
+| CI/CD | GitHub Actions (lint, type-check, unit tests, story tests, build) |
 | Deploy | Railway (backend + frontend + Postgres + Redis) |
 | Observability | PostHog (user analytics), Sentry (error tracking), Better Stack (logs + uptime) |
 
@@ -79,6 +81,32 @@ cd frontend
 npm install
 npm run dev                     # Vite dev server proxies /api to http://localhost:8000
 ```
+
+### Storybook
+
+```bash
+cd frontend
+npm run storybook               # Component explorer at http://localhost:6006
+```
+
+Use the **Run tests** button in the Storybook sidebar to execute all component interaction tests. Stories use MSW to mock API calls — no backend required.
+
+---
+
+## Frontend Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Vite dev server (port 5173, proxies `/api` to backend) |
+| `npm run build` | Type-check + production build |
+| `npm run storybook` | Storybook dev server (port 6006) |
+| `npm run build-storybook` | Static Storybook build |
+| `npm test` | Vitest watch mode — unit + story tests |
+| `npm run test:run` | One-shot run — unit + story tests (used in CI) |
+| `npm run test:unit` | Unit tests only (jsdom) |
+| `npm run test:stories` | Story interaction tests only (Playwright / Chromium) |
+| `npm run lint` | ESLint |
+| `npm run format` | Prettier |
 
 ---
 
@@ -246,17 +274,52 @@ findash/
 │   ├── Dockerfile
 │   └── requirements.txt
 ├── frontend/
+│   ├── .storybook/
+│   │   ├── main.ts              # Storybook config (addons, stories glob, static dirs)
+│   │   ├── preview.ts           # Global decorators, MSW init, autodocs, dark background
+│   │   └── vitest.setup.ts      # Project annotations for CLI story tests
 │   └── src/
-│       ├── components/
-│       │   ├── Login.tsx            # Sign in + forgot password flow
-│       │   ├── Register.tsx         # Account creation
-│       │   ├── ResetPassword.tsx    # Set new password (from email link)
-│       │   ├── ProfilePage.tsx      # Avatar upload, change email/password, delete account
-│       │   ├── Watchlist.tsx        # DB-backed watchlist
-│       │   ├── Portfolio.tsx        # DB-backed portfolio with P&L
-│       │   ├── StockDetail.tsx      # Price chart, fundamentals, news
-│       │   ├── AlertButton.tsx      # Per-row bell icon + price alert popover
-│       │   └── Paginator.tsx        # Reusable paginator
+│       ├── components/          # Each component has its own directory
+│       │   ├── AlertButton/
+│       │   │   ├── AlertButton.tsx         # Per-row bell icon + price alert popover
+│       │   │   ├── AlertButton.stories.tsx
+│       │   │   └── index.ts
+│       │   ├── Login/
+│       │   │   ├── Login.tsx               # Sign in + forgot password flow
+│       │   │   ├── Login.stories.tsx
+│       │   │   └── index.ts
+│       │   ├── Paginator/
+│       │   │   ├── Paginator.tsx           # Reusable paginator
+│       │   │   ├── Paginator.stories.tsx
+│       │   │   └── index.ts
+│       │   ├── Portfolio/
+│       │   │   ├── Portfolio.tsx           # DB-backed portfolio with P&L
+│       │   │   ├── Portfolio.stories.tsx
+│       │   │   └── index.ts
+│       │   ├── ProfilePage/
+│       │   │   ├── ProfilePage.tsx         # Avatar upload, change email/password, delete account
+│       │   │   ├── ProfilePage.stories.tsx
+│       │   │   └── index.ts
+│       │   ├── Register/
+│       │   │   ├── Register.tsx            # Account creation
+│       │   │   ├── Register.stories.tsx
+│       │   │   └── index.ts
+│       │   ├── ResetPassword/
+│       │   │   ├── ResetPassword.tsx       # Set new password (from email link)
+│       │   │   ├── ResetPassword.stories.tsx
+│       │   │   └── index.ts
+│       │   ├── StockDetail/
+│       │   │   ├── StockDetail.tsx         # Price chart, fundamentals, news
+│       │   │   ├── StockDetail.stories.tsx
+│       │   │   └── index.ts
+│       │   ├── TickerSearch/
+│       │   │   ├── TickerSearch.tsx        # Autocomplete ticker search
+│       │   │   ├── TickerSearch.stories.tsx
+│       │   │   └── index.ts
+│       │   └── Watchlist/
+│       │       ├── Watchlist.tsx           # DB-backed watchlist
+│       │       ├── Watchlist.stories.tsx
+│       │       └── index.ts
 │       ├── context/
 │       │   └── AuthContext.tsx      # JWT auth state, user profile, avatar
 │       ├── hooks/
@@ -264,8 +327,11 @@ findash/
 │       │   ├── useAlerts.ts         # Price alert state + browser notifications
 │       │   ├── useTheme.ts          # Dark/light theme toggle (localStorage)
 │       │   └── usePagination.ts     # Generic pagination hook
+│       ├── mocks/
+│       │   ├── handlers.ts          # MSW HTTP handlers for all API endpoints
+│       │   └── data.ts              # Realistic mock data (quotes, portfolios, watchlists)
 │       └── utils/
 │           └── exportCsv.ts         # CSV export helper
 ├── docker-compose.yml
-└── .github/workflows/ci.yml
+└── .github/workflows/ci.yml        # Backend + frontend lint/test/build + story tests
 ```

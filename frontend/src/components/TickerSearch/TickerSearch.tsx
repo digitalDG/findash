@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useSearchTickers } from "../hooks/useFinance";
+import { useSearchTickers } from "../../hooks/useFinance";
 
 interface Props {
   onSelect: (symbol: string) => void;

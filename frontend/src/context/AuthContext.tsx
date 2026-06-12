@@ -10,7 +10,7 @@ interface AuthUser {
   createdAt: string | null;
 }
 
-interface AuthContextValue {
+export interface AuthContextValue {
   user: AuthUser | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
@@ -20,7 +20,7 @@ interface AuthContextValue {
   refreshUser: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+export const AuthContext = createContext<AuthContextValue | null>(null);
 
 async function authPost(path: string, body: object): Promise<{ access_token: string }> {
   const res = await fetch(`${BASE_URL}${path}`, {

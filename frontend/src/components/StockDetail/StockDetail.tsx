@@ -3,8 +3,8 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer,
 } from "recharts";
-import { useQuote, useHistory, useFundamentals, useNews } from "../hooks/useFinance";
-import type { Period } from "../types/api";
+import { useQuote, useHistory, useFundamentals, useNews } from "../../hooks/useFinance";
+import type { Period } from "../../types/api";
 
 const PERIODS: Period[] = ["7d", "30d", "90d", "1y"];
 
