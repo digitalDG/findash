@@ -48,47 +48,53 @@ Live stock quotes, historical price charts, company fundamentals, news feed, wat
 flowchart LR
     Browser["Browser"]
 
-    subgraph Frontend["Frontend Container"]
-        NG["nginx\nstatic file server\n+ /api proxy"]
-        FE["React SPA\nTanStack Query"]
+    subgraph FC["Frontend Container"]
+        NG["nginx"]
+        FE["React SPA / TanStack Query"]
     end
 
-    subgraph API["FastAPI Backend"]
-        MW["CORS · Rate Limit\nMiddleware"]
-        AUTH["/api/auth\nregister · login · me\nforgot/reset password"]
-        MKT["/api/quotes · history\nfundamentals · news · search"]
-        DATA["/api/watchlists\nsaved-portfolios · portfolio"]
-        ALT["/api/alerts\n20 req/min rate limit"]
-        BGK["Alert Checker\nbackground task"]
+    subgraph BE["FastAPI Backend"]
+        MW["CORS + Rate Limit Middleware"]
+        AUTH["/api/auth"]
+        MKT["/api/quotes, history, fundamentals, news, search"]
+        DATA["/api/watchlists, saved-portfolios, portfolio"]
+        ALT["/api/alerts - 20 req/min"]
+        BGK["Alert Checker - background task"]
     end
 
-    subgraph Store["Data Layer"]
-        PG[("PostgreSQL\nusers · watchlists\nportfolios · alerts")]
-        RD[("Redis\nquote cache · reset tokens\nin-memory fallback")]
+    subgraph DL["Data Layer"]
+        PG[("PostgreSQL")]
+        RD[("Redis / in-memory fallback")]
     end
 
-    subgraph Ext["External Services"]
-        YF["yfinance\nYahoo Finance"]
-        MSG["Microsoft Graph\nEmail delivery"]
-        SNT["Sentry\nError tracking"]
-        BST["Better Stack\nLog aggregation"]
+    subgraph EXT["External Services"]
+        YF["yfinance / Yahoo Finance"]
+        MSG["Microsoft Graph - Email"]
+        SNT["Sentry - Errors"]
+        BST["Better Stack - Logs"]
+        PHG["PostHog - Analytics"]
     end
 
-    Browser -->|"HTTP"| NG
-    NG -->|"serves bundle"| FE
-    NG -->|"proxy /api/*"| MW
-    FE -->|"JWT Bearer"| NG
-    MW --> AUTH & MKT & DATA & ALT
+    Browser -->|HTTP| NG
+    NG -->|static files| FE
+    NG -->|proxy /api| MW
+    FE -->|JWT Bearer| NG
+    MW --> AUTH
+    MW --> MKT
+    MW --> DATA
+    MW --> ALT
     AUTH --> PG
     DATA --> PG
     ALT --> PG
-    MKT <-->|"read/write"| RD
-    MKT -->|"cache miss"| YF
-    BGK -->|"poll prices"| YF
-    BGK <-->|"read/update alerts"| PG
-    BGK -->|"trigger email"| MSG
-    API -.->|"errors"| SNT
-    API -.->|"logs"| BST
+    MKT <-->|cache| RD
+    MKT -->|cache miss| YF
+    BGK -->|poll prices| YF
+    BGK <--> PG
+    BGK -->|trigger email| MSG
+    BE -.->|errors| SNT
+    BE -.->|logs| BST
+    FE -.->|errors| SNT
+    FE -.->|analytics| PHG
 ```
 
 ---
