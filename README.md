@@ -75,7 +75,7 @@ flowchart LR
         PHG["PostHog - Analytics"]
     end
 
-    Browser -->|HTTP| NG
+    Browser -->|HTTPS| NG
     NG -->|static files| FE
     NG -->|proxy /api| MW
     FE -->|JWT Bearer| NG
