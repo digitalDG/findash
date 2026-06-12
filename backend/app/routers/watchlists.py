@@ -8,6 +8,7 @@ from app.models.db import User
 from app.models.schemas import (
     AddTickerRequest,
     WatchlistCreate,
+    WatchlistRename,
     WatchlistSchema,
     WatchlistTickerSchema,
 )
@@ -50,6 +51,23 @@ def get_watchlist(
     current_user: User = Depends(get_current_user),
 ):
     return _get_watchlist(watchlist_id, current_user, db)
+
+
+@router.patch("/{watchlist_id}", response_model=WatchlistSchema)
+def rename_watchlist(
+    watchlist_id: int,
+    payload: WatchlistRename,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    wl = _get_watchlist(watchlist_id, current_user, db)
+    name = payload.name.strip()
+    if not name:
+        raise HTTPException(status_code=422, detail="Name cannot be empty")
+    wl.name = name
+    db.commit()
+    db.refresh(wl)
+    return wl
 
 
 @router.delete("/{watchlist_id}", status_code=204)

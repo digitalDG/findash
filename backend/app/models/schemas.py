@@ -74,6 +74,10 @@ class WatchlistCreate(BaseModel):
     name: str = "My Watchlist"
 
 
+class WatchlistRename(BaseModel):
+    name: str
+
+
 class WatchlistSchema(BaseModel):
     id: int
     name: str

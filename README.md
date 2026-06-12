@@ -178,6 +178,7 @@ Use the **Run tests** button in the Storybook sidebar to execute all component i
 | GET | `/api/watchlists/` | List all watchlists |
 | POST | `/api/watchlists/` | Create a watchlist |
 | GET | `/api/watchlists/{id}` | Get watchlist with tickers |
+| PATCH | `/api/watchlists/{id}` | Rename watchlist |
 | DELETE | `/api/watchlists/{id}` | Delete watchlist |
 | POST | `/api/watchlists/{id}/tickers` | Add ticker |
 | DELETE | `/api/watchlists/{id}/tickers/{symbol}` | Remove ticker |

@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   useWatchlists,
   useCreateWatchlist,
+  useRenameWatchlist,
   useDeleteWatchlist,
   useAddWatchlistTicker,
   useRemoveWatchlistTicker,
@@ -37,12 +38,15 @@ export default function Watchlist({ onSelectTicker }: Props) {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [creatingNew, setCreatingNew] = useState(false);
   const [newName, setNewName] = useState("");
+  const [renamingId, setRenamingId] = useState<number | null>(null);
+  const [renameValue, setRenameValue] = useState("");
   const [openAlertTicker, setOpenAlertTicker] = useState<string | null>(null);
   const [seeded, setSeeded] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: watchlists = [], isLoading: loadingWatchlists } = useWatchlists();
   const createWatchlist = useCreateWatchlist();
+  const renameWatchlist = useRenameWatchlist();
   const deleteWatchlist = useDeleteWatchlist();
 
   // Auto-create a default watchlist on first load
@@ -110,6 +114,14 @@ export default function Watchlist({ onSelectTicker }: Props) {
     });
   }
 
+  function handleRename() {
+    const name = renameValue.trim();
+    if (name && renamingId !== null && name !== watchlists.find((w) => w.id === renamingId)?.name) {
+      renameWatchlist.mutate({ id: renamingId, name });
+    }
+    setRenamingId(null);
+  }
+
   function handleDeleteWatchlist(id: number, e: React.MouseEvent) {
     e.stopPropagation();
     if (watchlists.length <= 1) return; // keep at least one
@@ -141,8 +153,29 @@ export default function Watchlist({ onSelectTicker }: Props) {
       <div className="flex items-center gap-1 mb-4 flex-wrap">
         {watchlists.map((wl) => (
           <div key={wl.id} className="relative group">
+            {renamingId === wl.id ? (
+              <input
+                autoFocus
+                className="w-32 bg-indigo-600 text-white text-sm px-2 py-1.5 rounded-md outline-none border border-white/30"
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleRename();
+                  if (e.key === "Escape") setRenamingId(null);
+                }}
+                onBlur={handleRename}
+              />
+            ) : (
             <button
-              onClick={() => setSelectedId(wl.id)}
+              onClick={() => {
+                if (wl.id === watchlist?.id) {
+                  setRenamingId(wl.id);
+                  setRenameValue(wl.name);
+                } else {
+                  setSelectedId(wl.id);
+                }
+              }}
+              title={wl.id === watchlist?.id ? "Click to rename" : undefined}
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors pr-6 ${
                 wl.id === watchlist?.id
                   ? "bg-indigo-500 text-white"
@@ -151,6 +184,7 @@ export default function Watchlist({ onSelectTicker }: Props) {
             >
               {wl.name}
             </button>
+            )}
             {watchlists.length > 1 && (
               <button
                 onClick={(e) => handleDeleteWatchlist(wl.id, e)}

@@ -141,6 +141,19 @@ export function useCreateWatchlist() {
   });
 }
 
+export function useRenameWatchlist() {
+  const qc = useQueryClient();
+  return useMutation<DbWatchlist, Error, { id: number; name: string }>({
+    mutationFn: ({ id, name }) =>
+      apiFetch<DbWatchlist>(`/api/watchlists/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["watchlists"] }),
+  });
+}
+
 export function useDeleteWatchlist() {
   const qc = useQueryClient();
   return useMutation<void, Error, number>({

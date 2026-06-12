@@ -51,6 +51,10 @@ export const handlers = [
     const body = await request.json() as { name: string };
     return HttpResponse.json({ id: 99, name: body.name, tickers: [], created_at: new Date().toISOString() }, { status: 201 });
   }),
+  http.patch("/api/watchlists/:id", async ({ params, request }) => {
+    const body = await request.json() as { name: string };
+    return HttpResponse.json({ id: Number(params.id), name: body.name, tickers: [], created_at: new Date().toISOString() });
+  }),
   http.delete("/api/watchlists/:id", () => new HttpResponse(null, { status: 204 })),
   http.post("/api/watchlists/:id/tickers", async ({ request }) => {
     const body = await request.json() as { symbol: string };
