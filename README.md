@@ -46,8 +46,11 @@ Live stock quotes, historical price charts, company fundamentals, news feed, wat
 
 ```mermaid
 flowchart LR
-    subgraph Client["Client"]
-        FE["React Frontend\nTanStack Query"]
+    Browser["Browser"]
+
+    subgraph Frontend["Frontend Container"]
+        NG["nginx\nstatic file server\n+ /api proxy"]
+        FE["React SPA\nTanStack Query"]
     end
 
     subgraph API["FastAPI Backend"]
@@ -71,7 +74,10 @@ flowchart LR
         BST["Better Stack\nLog aggregation"]
     end
 
-    FE -->|"JWT Bearer"| MW
+    Browser -->|"HTTP"| NG
+    NG -->|"serves bundle"| FE
+    NG -->|"proxy /api/*"| MW
+    FE -->|"JWT Bearer"| NG
     MW --> AUTH & MKT & DATA & ALT
     AUTH --> PG
     DATA --> PG
