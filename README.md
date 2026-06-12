@@ -275,10 +275,11 @@ findash/
 │   └── requirements.txt
 ├── frontend/
 │   ├── .storybook/
-│   │   ├── main.ts              # Storybook config (addons, stories glob, static dirs)
+│   │   ├── main.ts              # Storybook config (addons, stories glob, viteFinal MDX fix)
 │   │   ├── preview.ts           # Global decorators, MSW init, autodocs, dark background
 │   │   └── vitest.setup.ts      # Project annotations for CLI story tests
 │   └── src/
+│       ├── Introduction.mdx     # Storybook component index (links to all component docs)
 │       ├── components/          # Each component has its own directory
 │       │   ├── AlertButton/
 │       │   │   ├── AlertButton.tsx         # Per-row bell icon + price alert popover
