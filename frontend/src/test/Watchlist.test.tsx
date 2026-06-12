@@ -41,6 +41,7 @@ vi.mock("../hooks/useFinance", () => ({
     isLoading: false,
   }),
   useCreateWatchlist: () => ({ mutate: mockCreateWatchlist, isPending: false }),
+  useRenameWatchlist: () => ({ mutate: vi.fn(), isPending: false }),
   useDeleteWatchlist: () => ({ mutate: mockDeleteWatchlist, isPending: false }),
   useAddWatchlistTicker: () => ({ mutate: mockAddTicker }),
   useRemoveWatchlistTicker: () => ({ mutate: mockRemoveTicker }),
