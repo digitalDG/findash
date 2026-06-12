@@ -1,0 +1,90 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+export const Go = ({ to, children }) => (
+  <a
+    href={'/?path=' + to}
+    style={{ color: '#1ea7fd', textDecoration: 'none' }}
+    onClick={(e) => {
+      e.preventDefault();
+      window.parent.location.href = '/?path=' + to;
+    }}
+  >
+    {children}
+  </a>
+);
+
+<Meta title="FinDash/Introduction" />
+
+# FinDash Components
+
+React + TypeScript financial dashboard. Components fetch data via TanStack Query; API calls are mocked with MSW in stories.
+
+---
+
+## Authentication
+
+<table width="100%" style={{ borderCollapse: 'collapse' }}>
+  <thead>
+    <tr style={{ borderBottom: '2px solid #e0e0e0' }}>
+      <th style={{ textAlign: 'left', padding: '8px 12px', width: 180 }}>Component</th>
+      <th style={{ textAlign: 'left', padding: '8px 12px' }}>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-login--docs">Login</Go></td><td style={{ padding: '8px 12px' }}>Sign in form with email/password and forgot password flow.</td></tr>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-register--docs">Register</Go></td><td style={{ padding: '8px 12px' }}>Account creation with email, password, and confirm password.</td></tr>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-resetpassword--docs">ResetPassword</Go></td><td style={{ padding: '8px 12px' }}>Set a new password using a token from a reset email link.</td></tr>
+  </tbody>
+</table>
+
+---
+
+## Dashboard
+
+<table width="100%" style={{ borderCollapse: 'collapse' }}>
+  <thead>
+    <tr style={{ borderBottom: '2px solid #e0e0e0' }}>
+      <th style={{ textAlign: 'left', padding: '8px 12px', width: 180 }}>Component</th>
+      <th style={{ textAlign: 'left', padding: '8px 12px' }}>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-watchlist--docs">Watchlist</Go></td><td style={{ padding: '8px 12px' }}>Manage multiple watchlists. Live quotes, price change, CSV export, and price alerts.</td></tr>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-portfolio--docs">Portfolio</Go></td><td style={{ padding: '8px 12px' }}>Holdings with cost basis, market value, unrealized P&amp;L, allocation chart, and CSV export.</td></tr>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-stockdetail--docs">StockDetail</Go></td><td style={{ padding: '8px 12px' }}>Price chart (7d/30d/90d/1y), fundamentals (P/E, EPS, beta, sector), and news feed.</td></tr>
+  </tbody>
+</table>
+
+---
+
+## Shared
+
+<table width="100%" style={{ borderCollapse: 'collapse' }}>
+  <thead>
+    <tr style={{ borderBottom: '2px solid #e0e0e0' }}>
+      <th style={{ textAlign: 'left', padding: '8px 12px', width: 180 }}>Component</th>
+      <th style={{ textAlign: 'left', padding: '8px 12px' }}>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-alertbutton--docs">AlertButton</Go></td><td style={{ padding: '8px 12px' }}>Bell icon popover to set above/below price alerts. Fires browser notifications on trigger.</td></tr>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-tickersearch--docs">TickerSearch</Go></td><td style={{ padding: '8px 12px' }}>Autocomplete search input for ticker symbols and company names.</td></tr>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-paginator--docs">Paginator</Go></td><td style={{ padding: '8px 12px' }}>Reusable previous/next paginator. Hidden when there is only one page.</td></tr>
+  </tbody>
+</table>
+
+---
+
+## Profile
+
+<table width="100%" style={{ borderCollapse: 'collapse' }}>
+  <thead>
+    <tr style={{ borderBottom: '2px solid #e0e0e0' }}>
+      <th style={{ textAlign: 'left', padding: '8px 12px', width: 180 }}>Component</th>
+      <th style={{ textAlign: 'left', padding: '8px 12px' }}>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style={{ padding: '8px 12px' }}><Go to="/docs/components-profilepage--docs">ProfilePage</Go></td><td style={{ padding: '8px 12px' }}>Change email, change password, upload avatar, and delete account.</td></tr>
+  </tbody>
+</table>
