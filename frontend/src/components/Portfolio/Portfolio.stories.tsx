@@ -1,4 +1,4 @@
-import type { Meta, StoryObj, Decorator } from "@storybook/react";
+import type { Meta, StoryObj, Decorator } from "@storybook/react-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fn } from "storybook/test";
 import { handlers } from "../../mocks/handlers";

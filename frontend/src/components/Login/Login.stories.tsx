@@ -1,4 +1,4 @@
-import type { Meta, StoryObj, Decorator } from "@storybook/react";
+import type { Meta, StoryObj, Decorator } from "@storybook/react-vite";
 import { fn, userEvent, within, expect } from "storybook/test";
 import Login from "./Login";
 import { AuthContext, type AuthContextValue } from "../../context/AuthContext";
