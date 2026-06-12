@@ -9,7 +9,7 @@ Live stock quotes, historical price charts, company fundamentals, news feed, wat
 ## Features
 
 - **Authentication** — register, login, JWT-based sessions (7-day tokens)
-- **Watchlists** — create and manage multiple watchlists, add/remove tickers, CSV export
+- **Watchlists** — create and manage multiple watchlists, rename by clicking the active tab, add/remove tickers, CSV export
 - **Portfolio** — track holdings with cost basis, unrealized P&L, day change, CSV export
 - **Stock detail** — price chart (7d/30d/90d/1y), fundamentals (P/E, EPS, beta, sector), news feed
 - **Price alerts** — set above/below price targets, email notification on trigger, browser push notification
@@ -90,6 +90,16 @@ npm run storybook               # Component explorer at http://localhost:6006
 ```
 
 Use the **Run tests** button in the Storybook sidebar to execute all component interaction tests. Stories use MSW to mock API calls — no backend required.
+
+### Git Hooks
+
+`npm install` (via the `prepare` script) wires a pre-commit hook that runs automatically before every commit:
+
+1. `ruff check app/` — backend lint (undefined names, missing imports, syntax errors)
+2. `eslint src` — frontend lint
+3. `vitest --project=unit run` — frontend unit tests
+
+The hook blocks the commit if any check fails, catching the same errors CI would catch.
 
 ---
 
@@ -275,6 +285,8 @@ findash/
 │   ├── Dockerfile
 │   └── requirements.txt
 ├── frontend/
+│   ├── .husky/
+│   │   └── pre-commit               # Runs ruff (backend) + eslint + vitest before every commit
 │   ├── .storybook/
 │   │   ├── main.ts              # Storybook config (addons, stories glob, viteFinal MDX fix)
 │   │   ├── preview.ts           # Global decorators, MSW init, autodocs, dark background
