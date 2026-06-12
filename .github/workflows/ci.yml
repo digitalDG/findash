@@ -66,7 +66,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Test
-        run: npm run test:run
+        run: npm run test:unit -- --run
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps
