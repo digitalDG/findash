@@ -15,7 +15,7 @@
     "format": "prettier --write src",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "prepare": "git -C .. config core.hooksPath frontend/.husky"
+    "prepare": "git -C .. config core.hooksPath frontend/.husky || true"
   },
   "dependencies": {
     "@sentry/react": "^10.57.0",
