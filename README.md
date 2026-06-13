@@ -294,6 +294,12 @@ The hook blocks the commit if any check fails, catching the same errors CI would
 
 > **Tip:** Railway projects can be suspended from Settings → Danger Zone → Suspend at no charge — useful for portfolio projects you want to keep but not run continuously.
 
+### Deployment Platform
+
+FinDash is deployed on Railway. If you're looking for a simple platform to host your own full-stack projects, you can sign up using my referral link and I'll earn a small credit:
+
+[railway.com referral](https://railway.com?referralCode=gM600C)
+
 ---
 
 ## Caching
